@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/KhaledSaiidi/go-commerce/internal/products"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
@@ -25,9 +26,11 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.Recoverer)
 
 	r.Use(middleware.Timeout(60 * time.Second))
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("all good"))
 	})
+	productsHandler := products.NewHandler(nil)
+	r.Get("/products", productsHandler.ListProducts)
 	return r
 }
 
